@@ -2,6 +2,8 @@ $(document).ready(function(){
   /*
   * TESTING DATA
   */
+  var bpm = 60;
+  var barLength = 8;
 
   /*
   * UI INTERACTION & EVENT LISTENERS
