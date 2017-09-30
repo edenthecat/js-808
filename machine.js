@@ -4,6 +4,7 @@ $(document).ready(function(){
   */
   var bpm = 60;
   var barLength = 8;
+  var step = 0;
 
   /*
   * UI INTERACTION & EVENT LISTENERS
@@ -23,32 +24,32 @@ $(document).ready(function(){
   */
   $(".play-button").click(function() {
     var $this = $(this);
-    var rows = $(".row");
+    var grid = $(".grid");
 
     $this.toggleClass("playing");
     if($this.hasClass("playing")) {
-      rows.trigger("row:playing");
+      grid.trigger("machine:playing");
     } else {
-      rows.trigger("row:paused");
+      grid.trigger("machine:paused");
     }
   });
 
   /*
   * Event: Row Playing
   */
-  $(".row").on("row:playing", function() {
+  $(".grid").on("machine:playing", function() {
     $this = $(this);
 
     playFrequency = getPlayFrequency();
 
-    playId = setInterval(function() {playRow($this)}, playFrequency);
+    playId = setInterval(play, playFrequency);
     $this.attr("data-play-id", playId);
   });
 
   /*
   * Event: Row Paused
   */
-  $(".row").on("row:paused", function() {
+  $(".grid").on("machine:paused", function() {
     $this = $(this);
 
     playId = $this.data("play-id");
@@ -57,20 +58,40 @@ $(document).ready(function(){
     clearInterval(playId);
   });
 
+  $(".row").on("row:play", function() {
+    console.log("row playing");
+    $this = $(this);
+    console.log($this);
+
+    playRow($this);
+  });
+
   /*
   * FUNCTIONALITY
   */
 
   /*
+  * play: play all active rows
+  */
+  function play() {
+    rows = $(".grid").children(".row");
+    console.log("is playing");
+    rows.trigger("row:play");
+    incrementStep();
+  }
+  /*
   * playRow: plays a row
   */
   function playRow(row) {
     var currentCell = getCurrentCell(row);
-    var currentBar = $(currentCell).parent(".bar");
+    console.log(row.data("row"));
+    var currentBar = $(currentCell).parent();
 
     playCell(currentCell);
 
     var nextCell = getNextCell(row, currentBar, currentCell);
+    var nextBar = nextCell.parent();
+    setCurrentBar(row, nextBar);
 
     setCurrentCell(row, nextCell);
     currentCell.removeClass("hit");
@@ -86,6 +107,18 @@ $(document).ready(function(){
     return playFrequency;
   }
 
+
+  /*
+  * Set current step
+  */
+  function incrementStep() {
+    if(step < 7) {
+      step++;
+    } else {
+      step = 0;
+    }
+  }
+
   /*
   * Set current cell
   */
@@ -98,16 +131,23 @@ $(document).ready(function(){
   * Get current cell
   */
   function getCurrentCell(row) {
-    var bars = $(row.children());
-    var cells = $(bars.children());
-
-    if(bars.children().hasClass("current")) {
-      return $(bars.children(".current"));
-    } else {
-      currentCell = $(bars.children().get(0));
-      setCurrentCell(row, currentCell);
-      return $(currentCell);
+    var rowIndex = row.data("row");
+    var barIndex = 0;
+    var currentBar = getCurrentBar(row);
+    if (currentBar.length > 0) {
+      barIndex = currentBar.data("bar");
     }
+    return getCellByIndices(rowIndex, barIndex, step);
+  }
+
+  function setCurrentBar(row, bar) {
+    console.log(bar);
+    bar.siblings().removeClass("current");
+    bar.addClass("current");
+  }
+
+  function getCurrentBar(row) {
+    return $(row.children(".current"));
   }
 
   /*
