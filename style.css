@@ -1,0 +1,30 @@
+.grid {
+    display: flex;
+    background-color: black;
+    height: 300px;
+    flex-direction: column;
+    padding: 1em;
+}
+
+.cell {
+    height: 4em;
+    width: 4em;
+    background-color: red;
+    margin: 0.5em;
+}
+
+.cell.active {
+  background-color: blue;
+}
+
+.row {
+    width: 100%;
+    background-color: aliceblue;
+    height: 6em;
+}
+
+.bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
