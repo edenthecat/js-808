@@ -39,6 +39,11 @@ $(document).ready(function(){
   /*
   * getPlayFrequency: calculates the play frequency based on the BPM
   */
+  function getPlayFrequency() {
+    playFrequency = ((bpm/60) * 4 ) / barLength; //calculate playFrequency in seconds
+    playFrequency *= 1000; //convert to miliseconds
+    return playFrequency;
+  }
 
   /*
   * Set current cell
