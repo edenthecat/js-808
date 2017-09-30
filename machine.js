@@ -87,14 +87,11 @@ $(document).ready(function(){
     console.log(row.data("row"));
     var currentBar = $(currentCell).parent();
 
-    playCell(currentCell);
-
     var nextCell = getNextCell(row, currentBar, currentCell);
     var nextBar = nextCell.parent();
     setCurrentBar(row, nextBar);
 
     setCurrentCell(row, nextCell);
-    currentCell.removeClass("hit");
     return true;
   }
 
@@ -183,14 +180,5 @@ $(document).ready(function(){
     var cell = $(bar).children(".cell").get(cellIndex);
 
     return $(cell);
-  }
-
-  /*
-  * playCell: checks if a cell is active, and if it is, sets the state to hit.
-  */
-  function playCell(cell) {
-    if (cell.hasClass("active")) {
-      $(cell).addClass("hit");
-    }
   }
 });
