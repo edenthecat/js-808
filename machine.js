@@ -9,10 +9,12 @@ $(document).ready(function(){
   * UI INTERACTION & EVENT LISTENERS
   */
 
-
   /*
-  * When a user clicks on a cell, it should activate that cell.
+  * When a user clicks on a cell, that cell is set to active.
   */
+  $(".cell").click(function() {
+    $(this).toggleClass("active");
+  });
 
   /*
   * When a user clicks on the play button:
