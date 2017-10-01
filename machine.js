@@ -181,4 +181,29 @@ $(document).ready(function(){
 
     return $(cell);
   }
+
+  function addNewRow() {
+    rowIndex = $(".row").last().data("row") + 1;
+
+    var $row = $("<div>", {"class": "row", "data-row": rowIndex});
+
+    var $bar = generateBar(0);
+    $bar.appendTo($row);
+
+    $row.appendTo($(".grid"));
+
+
+    console.log($row);
+  }
+
+  function generateBar(barIndex) {
+    var $bar = $("<div>", {"class": "bar", "data-bar": barIndex});
+
+    for (i = 0; i < barLength; i++) {
+      var $cell = $("<div>", {"class": "cell", "data-cell": i});
+      $cell.appendTo($bar);
+    }
+
+    return $bar;
+  }
 });
