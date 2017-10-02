@@ -17,6 +17,14 @@
   background-color: blue;
 }
 
+.cell.current {
+  border: 1px solid yellow;
+}
+
+.cell.active.current {
+  background-color: green;
+}
+
 .row {
     width: 100%;
     background-color: aliceblue;
