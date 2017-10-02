@@ -1,0 +1,16 @@
+.cell {
+  height: 4em;
+  width: 4em;
+  background-color: red;
+  margin: 0.5em;
+  opacity: 0.8;
+  &.active {
+    background-color: blue;
+  }
+  &.current {
+    opacity: 1;
+  }
+  &.active.current {
+    background-color: green;
+  }
+}
