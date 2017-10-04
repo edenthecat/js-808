@@ -32,6 +32,16 @@ $(document).ready(function(){
     loadPreset("rock beat");
   });
 
+  $("#presets").change(function() {
+    clearMachine();
+    preset = $("select option:selected").text();
+    loadPreset(preset);
+  });
+
+  $("#addNewRow").click(function() {
+    addNewRow();
+  });
+
   function generateInstrumentSelect() {
     var $instrumentSelect = $("<select/>", {"class": "instrument-select"});
     for (var i=0; i < instrumentList.length; i++) {
