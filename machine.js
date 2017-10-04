@@ -17,7 +17,9 @@ $(document).ready(function() {
     "open hi-hat",
     "ride",
     "ride bell",
-    "hi-hat foot"];
+    "hi-hat foot",
+    "cowbell"
+  ];
 
   /*
   * UI-BASED EVENT HANDLERS ----------------------------------------------------
