@@ -1,7 +1,7 @@
 .grid {
-    display: flex;
-    background-color: black;
-    height: 300px;
-    flex-direction: column;
-    padding: 1em;
+    display: block;
+    width: 100%;
+    position: relative;
+    clear: both;
+    top: 2em;
 }

@@ -1,16 +1,18 @@
-.cell {
-  height: 4em;
-  width: 4em;
-  background-color: red;
-  margin: 0.5em;
-  opacity: 0.8;
-  &.active {
-    background-color: blue;
-  }
-  &.current {
-    opacity: 1;
-  }
-  &.active.current {
-    background-color: green;
-  }
+.row .cell {
+    height: 5vw;
+    width: 10vw;
+    margin: 0.5em;
+    background-color: $grey;
+    border-bottom: 5px solid darken($grey, 40%);
+    opacity: 0.7;
+    &.active {
+      background-color: $blue;
+      opacity: 0.9;
+    }
+    &.current {
+      opacity: 1;
+    }
+    &.active.current {
+      background-color: $green;
+    }
 }

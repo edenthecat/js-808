@@ -1,5 +1,12 @@
 .bar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.playing .bar {
+  opacity: 0.8;
+  &.current {
+    opacity: 1;
+  }
 }

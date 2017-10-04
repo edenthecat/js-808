@@ -1,0 +1,13 @@
+select {
+    font-family: $font;
+    background-color: transparent;
+    width: 20vw;
+    font-size: 1em;
+    color: $white;
+    border: none;
+    border-bottom: none;
+    border-radius: 0;
+    outline: 1px solid $white;
+    margin: 2vw 1vw 1vw;
+    height: 4vw;
+}

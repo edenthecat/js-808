@@ -1,7 +1,43 @@
-@import "config/.";
-@import "partials/.";
+@import "config/index";
+@import "partials/index";
+@import "components/index";
 
+body {
+  background-color: darken($accent5, 10%);
+  color: $white;
+  font-family: $font;
+}
 
+#machine {
+    width: 90%;
+    margin: 0 auto;
+    display: block;
+    h1 {
+      float: left;
+      margin: 0;
+      font-size: 2em;
+    }
+}
 
+.machine-controls {
+    float: right;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 60%;
+    align-items: center;
+    height: 2em;
+    margin-top: 0.5em;
+  select {
+    margin: 0;
+  }
+}
 
-
+#bpm {
+    outline: solid 1px white;
+    background-color: transparent;
+    border: 0;
+    padding: 1vw;
+    color: white;
+    width: 2em;
+}
