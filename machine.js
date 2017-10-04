@@ -1,6 +1,6 @@
-$(document).ready(function(){
+$(document).ready(function() {
   /*
-  * TESTING DATA
+  * DATA
   */
   var barLength = 8;
   var step = 0;
@@ -20,71 +20,149 @@ $(document).ready(function(){
     "ride bell",
     "hi-hat foot"];
 
-  $("#bpm").change(function() {
-    stopMachine();
-  })
-
   /*
-  * INITIALIZATION
+  * UI-BASED EVENT HANDLERS ----------------------------------------------------
   */
+
+  // GRID
   $(".grid").ready(function() {
     presetList = getPresetList(presetFile);
     loadPreset("rock beat");
   });
 
+  // ROWS
+  // Add a row when user clicks "add new row"
+  $("#addNewRow").click(function() {
+    addNewRow();
+  });
+
+  // BPM
+  // When bpm is changed, stop the machine
+  // TODO: Refactor so that user doesn't have to press
+  // play again
+  $("#bpm").change(function() {
+    stopMachine();
+  })
+
+  // PRESETS
+  // When presets change, clear machine and load new preset
   $("#presets").change(function() {
     clearMachine();
     preset = $("select option:selected").text();
     loadPreset(preset);
   });
 
-  $("#addNewRow").click(function() {
-    addNewRow();
+  // PLAY/PAUSE/STOP
+  $(".play-button").click(function() {
+    var $this = $(this);
+
+    $this.toggleClass("playing");
+    $this.toggleClass("fa-play");
+    $this.toggleClass("fa-pause");
+    $(".grid").toggleClass("playing");
+    if($this.hasClass("playing")) {
+      $(".grid").trigger("machine:playing");
+    } else {
+      $(".grid").trigger("machine:paused");
+    }
   });
 
-  function generateInstrumentSelect() {
-    var $instrumentSelect = $("<select/>", {"class": "instrument-select"});
-    for (var i=0; i < instrumentList.length; i++) {
-      $option = $("<option/>")
-        .val(instrumentList[i])
-        .html(instrumentList[i])
-        .appendTo($instrumentSelect);
+  $(".stop-button").click(function() {
+    stopMachine();
+  });
+
+  /*
+  * OTHER EVENT HANDLERS
+  */
+  $(".grid").on("machine:playing", function() {
+    $this = $(this);
+
+    playFrequency = getPlayFrequency();
+
+    initializeGrid($this);
+
+    playId = setInterval(play, playFrequency);
+    $this.attr("data-play-id", playId);
+  });
+
+  $(".grid").on("machine:paused", function() {
+    $this = $(this);
+
+    playId = $this.data("play-id");
+    $this.removeData("play-id");
+    $this.removeAttr("data-play-id");
+    clearInterval(playId);
+  });
+
+  /*
+  *
+  * FUNCTIONS ------------------------------------------------------------------
+  *
+  */
+
+
+  // PLAY/PAUSE/STOP
+  function play() {
+    rows = $(".grid").children(".row");
+    rows.trigger("row:play");
+    incrementStep();
+  }
+
+  function stopMachine() {
+    $(".grid").trigger("machine:paused");
+    $(".play-button").trigger("click");
+    $(".current").removeClass("current");
+  }
+
+  function playRow(row) {
+    var currentCell = getCurrentCell(row);
+    var currentBar = $(currentCell).parent();
+
+    var nextCell = getNextCell(row, currentBar, currentCell);
+    var nextBar = nextCell.parent();
+
+    setCurrentBar(row, nextBar);
+
+    setCurrentCell(row, nextCell);
+  }
+
+  function getPlayFrequency() {
+    bpm = $("#bpm").val();
+    beatsPerBar = 4;
+
+    // See http://xmidi.com/bpm.pdf for formula
+    playFrequency = 1000 / ( bpm / 60 ) * (beatsPerBar / barLength);
+    return playFrequency;
+  }
+
+  function incrementStep() {
+    console.log("incrementing step");
+    if(step < 7) {
+      step++;
+    } else {
+      step = 0;
     }
-    return $instrumentSelect;
+    totalSteps++;
   }
 
-  function getPresetList() {
-    $.getJSON(presetFile, function( data ) {
-      var presets = data.presets;
-      var presetNames = Object.keys(presets);
-      for (var i=0; i < presetNames.length; i++){
-        $('<option/>')
-          .val(presetNames[i])
-          .html(presetNames[i])
-          .appendTo('#presets');
-      }
-    });
-  }
 
-  function loadPreset(presetName) {
-    $.getJSON(presetFile, function( data ) {
-      var presets = Object.entries(data.presets);
-      var preset = presets.find( function(item) {
-        return item[0] == presetName;
-      });
-      displayPreset(preset[1]);
-    });
-  }
+  /*
+  * UI GENERATION/DESTRUCTION FUNCTIONS ----------------------------------------
+  */
 
-  function displayPreset(preset) {
-    var instruments = preset.instruments;
+  // GRID
+  function initializeGrid($grid) {
+    $rows = $grid.children();
 
-    clearMachine();
-    generateGridFromPreset(instruments);
-  }
+    for(var i = 0; i < $rows.length; i++) {
+      row = $($rows[i]);
 
-  function clearMachine() {
-    $(".grid").empty();
+      $firstBar = $(row.children(".bar").get(0));
+      setCurrentBar(row, $firstBar);
+
+      $firstCell = $($firstBar.get(0));
+      setCurrentCell(row, $firstCell);
+    }
   }
 
   function generateGridFromPreset(instruments) {
@@ -106,6 +184,11 @@ $(document).ready(function(){
     }
   }
 
+  function clearMachine() {
+    $(".grid").empty();
+  }
+
+  // ROW
   function generateRow(instrumentName) {
     var rowIndex = 0;
     if ($(".row").length > 0) {
@@ -144,160 +227,76 @@ $(document).ready(function(){
     return $row;
   }
 
-  /*
-  * UI INTERACTION & EVENT LISTENERS
-  */
+  function addNewRow() {
+    rowIndex = $(".row").last().data("row") + 1;
 
-  /*
-  * When a user clicks on a cell, that cell is set to active.
-  */
+    var $row = generateRow("kick");
+    var $bar = generateBar(0);
+    $bar.appendTo($row);
 
+    $row.appendTo($(".grid"));
+  }
 
-  /*
-  * When a user clicks on the play button:
-  * - If not playing, it should play.
-  * - If playing, it should pause.
-  */
-  $(".play-button").click(function() {
-    var $this = $(this);
+  // BAR
+  function generateBar(barIndex) {
+    var $bar = $("<div>", {"class": "bar", "data-bar": barIndex});
 
-    $this.toggleClass("playing");
-    $this.toggleClass("fa-play");
-    $this.toggleClass("fa-pause");
-    $(".grid").toggleClass("playing");
-    if($this.hasClass("playing")) {
-      $(".grid").trigger("machine:playing");
-    } else {
-      $(".grid").trigger("machine:paused");
+    for (i = 0; i < barLength; i++) {
+      var $cell = $("<div>", {"class": "cell", "data-cell": i});
+
+      $cell.click(function() {
+          $(this).toggleClass("active");
+      });
+
+      $cell.appendTo($bar);
     }
-  });
 
-  $(".stop-button").click(function() {
-    stopMachine();
-  });
-
-  function stopMachine() {
-    $(".grid").trigger("machine:paused");
-    $(".play-button").trigger("click");
-    $(".current").removeClass("current");
+    return $bar;
   }
 
-  /*
-  * Event: Row Playing
-  */
-  $(".grid").on("machine:playing", function() {
-    $this = $(this);
+  function addNewBar(e) {
+    $currentRow = $(e.currentTarget).parent().parent();
+    barIndex = $currentRow.children(".bar").last();
+    $bar = generateBar(barIndex);
+    $bar.appendTo($currentRow);
+  }
 
-    playFrequency = getPlayFrequency();
-
-    initializeGrid($this);
-
-    playId = setInterval(play, playFrequency);
-    $this.attr("data-play-id", playId);
-  });
-
-  function initializeGrid($grid) {
-    $rows = $grid.children();
-
-    for(var i = 0; i < $rows.length; i++) {
-      row = $($rows[i]);
-
-      $firstBar = $(row.children(".bar").get(0));
-      setCurrentBar(row, $firstBar);
-
-      $firstCell = $($firstBar.get(0));
-      setCurrentCell(row, $firstCell);
+  // INSTRUMENT SELECT
+  function generateInstrumentSelect() {
+    var $instrumentSelect = $("<select/>", {"class": "instrument-select"});
+    for (var i=0; i < instrumentList.length; i++) {
+      $option = $("<option/>")
+        .val(instrumentList[i])
+        .html(instrumentList[i])
+        .appendTo($instrumentSelect);
     }
+    return $instrumentSelect;
+  }
+
+  // PRESETS
+
+  function loadPreset(presetName) {
+    $.getJSON(presetFile, function( data ) {
+      var presets = Object.entries(data.presets);
+      var preset = presets.find( function(item) {
+        return item[0] == presetName;
+      });
+      displayPreset(preset[1]);
+    });
+  }
+
+  function displayPreset(preset) {
+    var instruments = preset.instruments;
+
+    clearMachine();
+    generateGridFromPreset(instruments);
   }
 
   /*
-  * Event: Row Paused
-  */
-  $(".grid").on("machine:paused", function() {
-    $this = $(this);
-
-    playId = $this.data("play-id");
-    $this.removeData("play-id");
-    $this.removeAttr("data-play-id");
-    clearInterval(playId);
-  });
-
-  /*
-  * FUNCTIONALITY
+  * SETTERS/GETTERS ------------------------------------------------------------
   */
 
-  /*
-  * play: play all active rows
-  */
-  function play() {
-    rows = $(".grid").children(".row");
-    rows.trigger("row:play");
-    incrementStep();
-  }
-  /*
-  * playRow: plays a row
-  */
-  function playRow(row) {
-    var currentCell = getCurrentCell(row);
-    var currentBar = $(currentCell).parent();
-
-    var nextCell = getNextCell(row, currentBar, currentCell);
-    var nextBar = nextCell.parent();
-
-    setCurrentBar(row, nextBar);
-
-    setCurrentCell(row, nextCell);
-    //return true;
-  }
-
-  /*
-  * getPlayFrequency: calculates the play frequency based on the BPM
-  */
-  function getPlayFrequency() {
-    bpm = $("#bpm").val();
-    beatsPerBar = 4;
-
-    // See http://xmidi.com/bpm.pdf for formula
-    playFrequency = 1000 / ( bpm / 60 ) * (beatsPerBar / barLength);
-    return playFrequency;
-  }
-
-
-  /*
-  * Set current step
-  */
-  function incrementStep() {
-    console.log("incrementing step");
-    if(step < 7) {
-      step++;
-    } else {
-      step = 0;
-    }
-    totalSteps++;
-  }
-
-  /*
-  * Set current cell
-  */
-  function setCurrentCell(row, cell) {
-    $bars = getCurrentBar(row);
-    $bars.children().removeClass("current");
-    cell.addClass("current");
-  }
-
-  /*
-  * Get current cell
-  */
-  function getCurrentCell(row) {
-    var rowIndex = row.data("row");
-    var barIndex = 0;
-    var currentBar = getCurrentBar(row);
-    if (currentBar.length > 0) {
-      barIndex = currentBar.data("bar");
-    }
-    return getCellByIndices(rowIndex, barIndex, step);
-  }
-
+  // BARS
   function setCurrentBar(row, bar) {
     if(!bar.hasClass("current")) {
       $bars = $(row.children());
@@ -315,9 +314,24 @@ $(document).ready(function(){
     return $bar;
   }
 
-  /*
-  * getNextCell: retrieves the next cell in a row
-  */
+
+  // CELLS
+  function setCurrentCell(row, cell) {
+    $bars = getCurrentBar(row);
+    $bars.children().removeClass("current");
+    cell.addClass("current");
+  }
+
+  function getCurrentCell(row) {
+    var rowIndex = row.data("row");
+    var barIndex = 0;
+    var currentBar = getCurrentBar(row);
+    if (currentBar.length > 0) {
+      barIndex = currentBar.data("bar");
+    }
+    return getCellByIndices(rowIndex, barIndex, step);
+  }
+
   function getNextCell(row, bar, cell) {
     var numberOfBarsInRow = row.children().length;
 
@@ -339,9 +353,6 @@ $(document).ready(function(){
     return getCellByIndices(rowIndex, barIndex, cellIndex);
   }
 
-  /*
-  * getCellByIndices: given a set of indices, returns the specified cell (jQuery object)
-  */
   function getCellByIndices(rowIndex, barIndex, cellIndex) {
     var row = $(".grid").children(".row").get(rowIndex);
     var bar = $(row).children(".bar").get(barIndex);
@@ -350,37 +361,18 @@ $(document).ready(function(){
     return $(cell);
   }
 
-  function addNewRow() {
-    rowIndex = $(".row").last().data("row") + 1;
-
-    var $row = generateRow("kick");
-    var $bar = generateBar(0);
-    $bar.appendTo($row);
-
-    $row.appendTo($(".grid"));
-  }
-
-  function addNewBar(e) {
-    $currentRow = $(e.currentTarget).parent().parent();
-    barIndex = $currentRow.children(".bar").last();
-    $bar = generateBar(barIndex);
-    $bar.appendTo($currentRow);
-  }
-
-  function generateBar(barIndex) {
-    var $bar = $("<div>", {"class": "bar", "data-bar": barIndex});
-
-    for (i = 0; i < barLength; i++) {
-      var $cell = $("<div>", {"class": "cell", "data-cell": i});
-
-      $cell.click(function() {
-          $(this).toggleClass("active");
-      });
-
-      $cell.appendTo($bar);
-    }
-
-    return $bar;
+  // PRESETS
+  function getPresetList() {
+    $.getJSON(presetFile, function( data ) {
+      var presets = data.presets;
+      var presetNames = Object.keys(presets);
+      for (var i=0; i < presetNames.length; i++){
+        $('<option/>')
+          .val(presetNames[i])
+          .html(presetNames[i])
+          .appendTo('#presets');
+      }
+    });
   }
 
 });
