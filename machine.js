@@ -197,21 +197,7 @@ $(document).ready(function() {
     }
     $row = $("<div>", {"class": "row", "data-row": rowIndex});
 
-    $controls = $("<div>", {"class": "controls"});
-
-    $instrumentSelect = generateInstrumentSelect();
-    if (instrumentName) {
-     $instrumentSelect.val(instrumentName);
-    }
-    $instrumentSelect.appendTo($controls);
-
-    $addNewBarButton = $("<div/>", {"class": "add-new-bar"})
-      .text("Add New Bar");
-    $addNewBarButton.on("click", function(e) {
-      addNewBar(e);
-    });
-    $addNewBarButton.appendTo($controls);
-
+    $controls = generateRowControls(instrumentName);
     $controls.appendTo($row);
 
     $row.on("row:play", function() {
@@ -225,6 +211,22 @@ $(document).ready(function() {
        playRow($this);
     });
     return $row;
+  }
+
+  function generateRowControls(instrumentName) {
+    $controls = $("<div>", {"class": "controls"});
+
+    $instrumentSelect = generateInstrumentSelect(instrumentName);
+    $instrumentSelect.appendTo($controls);
+
+    $addNewBarButton = $("<div/>", {"class": "add-new-bar"})
+      .text("Add New Bar");
+    $addNewBarButton.on("click", function(e) {
+      addNewBar(e);
+    });
+    $addNewBarButton.appendTo($controls);
+
+    return $controls;
   }
 
   function addNewRow() {
@@ -263,7 +265,7 @@ $(document).ready(function() {
   }
 
   // INSTRUMENT SELECT
-  function generateInstrumentSelect() {
+  function generateInstrumentSelect(instrumentName) {
     var $instrumentSelect = $("<select/>", {"class": "instrument-select"});
     for (var i=0; i < instrumentList.length; i++) {
       $option = $("<option/>")
@@ -271,6 +273,7 @@ $(document).ready(function() {
         .html(instrumentList[i])
         .appendTo($instrumentSelect);
     }
+    $instrumentSelect.val(instrumentName);
     return $instrumentSelect;
   }
 
