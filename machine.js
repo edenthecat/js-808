@@ -20,6 +20,10 @@ $(document).ready(function(){
     "ride bell",
     "hi-hat foot"];
 
+  $("#bpm").change(function() {
+    stopMachine();
+  })
+
   /*
   * INITIALIZATION
   */
