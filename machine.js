@@ -32,6 +32,7 @@ $(document).ready(function() {
   // ROWS
   // Add a row when user clicks "add new row"
   $("#addNewRow").click(function() {
+    stopMachine();
     addNewRow();
   });
 
@@ -255,7 +256,8 @@ $(document).ready(function() {
 
   function addNewBar(e) {
     $currentRow = $(e.currentTarget).parent().parent();
-    barIndex = $currentRow.children(".bar").last();
+    lastBar = getLastBarInRow($currentRow);
+    barIndex = lastBar.data("bar") + 1;
     $bar = generateBar(barIndex);
     $bar.appendTo($currentRow);
   }
