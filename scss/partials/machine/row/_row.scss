@@ -1,0 +1,46 @@
+@import "bar";
+@import "cell";
+@import "control-button";
+
+.row {
+    width: 100%;
+    background-color: $accent1;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1vw;
+    &:nth-of-type(2n+1) {
+      .controls { background-color: darken($accent3, 10%); }
+      .instrument-select-wrap { background-color: darken($accent3, 15%);}
+      .add-new-bar-wrap { background-color: darken($accent3, 20%);}
+      .delete-bar { color: darken($accent3, 20%);}
+      background-color: $accent3;
+    }
+    &:nth-of-type(2n+2) {
+      .controls { background-color: darken($accent4, 10%); }
+      .instrument-select-wrap { background-color: darken($accent4, 15%);}
+      .add-new-bar-wrap { background-color: darken($accent4, 20%);}
+      .delete-bar { color: darken($accent4, 20%);}
+      background-color: $accent4;
+    }
+}
+
+select.instrument-select {
+  margin: 0;
+  outline: 0;
+  text-transform: uppercase;
+  font-size: 0.75em;
+}
+
+.add-new-bar {
+    text-align: center;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    padding: 1vw;
+    align-self: flex-end;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

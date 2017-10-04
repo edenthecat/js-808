@@ -1,6 +1,6 @@
-.row .cell {
-    height: 5vw;
-    width: 10vw;
+.cell {
+    min-height: 3vw;
+    flex-grow: 1;
     margin: 0.5em;
     background-color: $grey;
     border-bottom: 5px solid darken($grey, 40%);

@@ -1,0 +1,21 @@
+.bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    flex: 1;
+    height: 50%;
+    align-items: center;
+}
+
+.playing .bar {
+  opacity: 0.8;
+  &.current {
+    opacity: 1;
+  }
+}
+
+.delete-bar {
+    margin: 1vw;
+    align-self: center;
+}
