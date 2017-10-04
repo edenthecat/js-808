@@ -2,7 +2,6 @@ $(document).ready(function(){
   /*
   * TESTING DATA
   */
-  var bpm = 60;
   var barLength = 8;
   var step = 0;
   var totalSteps = 0;
