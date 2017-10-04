@@ -102,7 +102,7 @@ $(document).ready(function() {
 
   // PLAY/PAUSE/STOP
   function play() {
-    rows = $(".grid").children(".row");
+    rows = getAllRowsInGrid();
     rows.trigger("row:play");
     incrementStep();
   }
@@ -115,10 +115,10 @@ $(document).ready(function() {
 
   function playRow(row) {
     var currentCell = getCurrentCell(row);
-    var currentBar = $(currentCell).parent();
+    var currentBar = getBarFromCell(currentCell);
 
     var nextCell = getNextCell(row, currentBar, currentCell);
-    var nextBar = nextCell.parent();
+    var nextBar = getBarFromCell(nextCell);
 
     setCurrentBar(row, nextBar);
 
@@ -295,22 +295,45 @@ $(document).ready(function() {
   * SETTERS/GETTERS ------------------------------------------------------------
   */
 
+  // ROWS
+
+  function getAllRowsInGrid() {
+    return $(".grid").children(".row");
+  }
+
+
   // BARS
-  function setCurrentBar(row, bar) {
-    if(!bar.hasClass("current")) {
-      $bars = $(row.children());
+  function setCurrentBar($row, $bar) {
+    if(!$bar.hasClass("current")) {
+      $bars = getAllBarsInRow($row);
       $bars.removeClass("current");
-      bar.addClass("current");
+      $bar.addClass("current");
     }
   }
 
-  function getCurrentBar(row) {
-    $bar = $(row.children(".current"));
+  function getCurrentBar($row) {
+    $bar = $($row.children(".current"));
     if($bar.length == 0) {
-      $bar = $(row.children().get(0));
-      setCurrentBar(row, $bar);
+      $bar = getFirstBarInRow($row);
+      setCurrentBar($row, $bar);
     }
     return $bar;
+  }
+
+  function getBarFromCell(cell) {
+    return $(cell).parent(".bar");
+  }
+
+  function getAllBarsInRow($row) {
+    return $row.children(".bar");
+  }
+
+  function getLastBarInRow($row) {
+    return getAllBarsInRow($row).last();
+  }
+
+  function getFirstBarInRow($row) {
+    return getAllBarsInRow($row).first();
   }
 
 
