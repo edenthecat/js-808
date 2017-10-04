@@ -6,7 +6,6 @@ $(document).ready(function() {
   var step = 0;
   var totalSteps = 0;
   var presetFile = "presets.json";
-  var instrumentFile = "instruments.json";
   var instrumentList = [
     "kick",
     "snare",
@@ -42,7 +41,7 @@ $(document).ready(function() {
   // play again
   $("#bpm").change(function() {
     stopMachine();
-  })
+  });
 
   // PRESETS
   // When presets change, clear machine and load new preset
