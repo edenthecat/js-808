@@ -59,6 +59,7 @@ $(document).ready(function() {
     $this.toggleClass("playing");
     $this.toggleClass("fa-play");
     $this.toggleClass("fa-pause");
+
     $(".grid").toggleClass("playing");
     if($this.hasClass("playing")) {
       $(".grid").trigger("machine:playing");
@@ -103,8 +104,8 @@ $(document).ready(function() {
 
   // PLAY/PAUSE/STOP
   function play() {
-    rows = getAllRowsInGrid();
-    rows.trigger("row:play");
+    $rows = getAllRowsInGrid();
+    $rows.trigger("row:play");
     incrementStep();
   }
 
@@ -114,16 +115,16 @@ $(document).ready(function() {
     $(".current").removeClass("current");
   }
 
-  function playRow(row) {
-    var currentCell = getCurrentCell(row);
-    var currentBar = getBarFromCell(currentCell);
+  function playRow($row) {
+    var $currentCell = getCurrentCell($row);
+    var $currentBar = getBarFromCell($currentCell);
 
-    var nextCell = getNextCell(row, currentBar, currentCell);
-    var nextBar = getBarFromCell(nextCell);
+    var $nextCell = getNextCell($row, $currentBar, $currentCell);
+    var $nextBar = getBarFromCell($nextCell);
 
-    setCurrentBar(row, nextBar);
+    setCurrentBar($row, $nextBar);
 
-    setCurrentCell(row, nextCell);
+    setCurrentCell($row, $nextCell);
   }
 
   function getPlayFrequency() {
@@ -155,13 +156,13 @@ $(document).ready(function() {
     $rows = $grid.children();
 
     for(var i = 0; i < $rows.length; i++) {
-      row = $($rows[i]);
+      $row = $($rows[i]);
 
-      $firstBar = $(row.children(".bar").get(0));
-      setCurrentBar(row, $firstBar);
+      $firstBar = getFirstBarInRow($row);
+      setCurrentBar($row, $firstBar);
 
       $firstCell = $($firstBar.get(0));
-      setCurrentCell(row, $firstCell);
+      setCurrentCell($row, $firstCell);
     }
   }
 
@@ -189,7 +190,7 @@ $(document).ready(function() {
   }
 
   // ROW
-  function generateRow(instrumentName) {
+  function generateRow(instrumentName = "kick") {
     var rowIndex = 0;
     if ($(".row").length > 0) {
       rowIndex = $(".row").last().data("row") + 1;
@@ -212,7 +213,6 @@ $(document).ready(function() {
     $addNewBarButton.appendTo($controls);
 
     $controls.appendTo($row);
-
 
     $row.on("row:play", function() {
        $this = $(this);
@@ -256,8 +256,8 @@ $(document).ready(function() {
 
   function addNewBar(e) {
     $currentRow = $(e.currentTarget).parent().parent();
-    lastBar = getLastBarInRow($currentRow);
-    barIndex = lastBar.data("bar") + 1;
+    $lastBar = getLastBarInRow($currentRow);
+    barIndex = $lastBar.data("bar") + 1;
     $bar = generateBar(barIndex);
     $bar.appendTo($currentRow);
   }
