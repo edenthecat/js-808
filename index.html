@@ -3,13 +3,26 @@
   <head>
     <meta charset="UTF-8">
     <title>Eden's Drum Machine</title>
+    <!-- Using font awesome icons just to prototype-->
+    <script src="https://use.fontawesome.com/16482ff0eb.js"></script>
     <link rel="stylesheet" type="text/css" href="public/style.css">
   </head>
   <body>
-    <select id="presets"></select>
-    <button class="play-button">play</button>
+    <div id="machine">
+      <h1>JS-808</h1>
+      <div class="machine-controls">
+        <select id="presets"></select>
+        <button class="control-button play-button fa fa-play">
+        </button>
+        <button class="control-button stop-button fa fa-stop">
+        </button>
+        <input id="bpm" type="text" name="bpm" maxLength="3" value="60">
+      </div>
 
-    <div class="grid">
+      <div class="grid">
+      </div>
+
+      <div id="addNewRow" class="add-new-row">Add New Row</div>
     </div>
 
     <script
