@@ -97,6 +97,18 @@ $(document).ready(function() {
     clearInterval(playId);
   });
 
+  $(".grid").on("machine:stopped", function() {
+    $this = $(this);
+
+    playId = $this.data("play-id");
+    $this.removeData("play-id");
+    $this.removeAttr("data-play-id");
+    clearInterval(playId);
+
+    step = 0;
+    totalSteps = 0;
+  });
+
   /*
   *
   * FUNCTIONS ------------------------------------------------------------------
@@ -112,8 +124,19 @@ $(document).ready(function() {
   }
 
   function stopMachine() {
-    $(".grid").trigger("machine:paused");
-    $(".play-button").trigger("click");
+    $playButton = $(".play-button");
+
+    $(".grid").trigger("machine:stopped");
+
+    if ($playButton.hasClass("fa-pause")) {
+      $playButton.toggleClass("fa-pause playing");
+      $playButton.toggleClass("fa-play");
+    } else if (!$playButton.hasClass("fa-play")) {
+      $playButton.toggleClass("fa-play");
+    }
+
+
+
     $(".current").removeClass("current");
   }
 
@@ -139,8 +162,8 @@ $(document).ready(function() {
   }
 
   function incrementStep() {
-    console.log("incrementing step");
-    if(step < 7) {
+    currentExists = ($(".current").length > 0);
+    if(step < 7 && currentExists) {
       step++;
     } else {
       step = 0;
@@ -222,16 +245,20 @@ $(document).ready(function() {
   function generateRowControls(instrumentName) {
     $controls = $("<div>", {"class": "controls"});
 
+    $instrumentSelectWrapper = $("<div>", {"class": "instrument-select-wrap"});
     $instrumentSelect = generateInstrumentSelect(instrumentName);
-    $instrumentSelect.appendTo($controls);
+    $instrumentSelect.appendTo($instrumentSelectWrapper);
+    $instrumentSelectWrapper.appendTo($controls);
 
+    $addNewBarWrapper = $("<div>", {"class": "add-new-bar-wrap"});
     $addNewBarButton = $("<div/>", {"class": "add-new-bar"})
       .text("Add New Bar");
     $addNewBarButton.on("click", function(e) {
       stopMachine();
       addNewBar(e);
     });
-    $addNewBarButton.appendTo($controls);
+    $addNewBarButton.appendTo($addNewBarWrapper);
+    $addNewBarWrapper.appendTo($controls);
 
     return $controls;
   }
@@ -245,6 +272,24 @@ $(document).ready(function() {
     $bar.appendTo($bars);
 
     $row.appendTo($(".grid"));
+  }
+
+  function deleteRow($row) {
+    stopMachine();
+    $row.remove();
+    $rows = getAllRowsInGrid();
+    if ($rows.length == 0) {
+      addNewRow();
+    } else {
+      resetRowIndexes();
+    }
+  }
+
+  function resetRowIndexes() {
+    $rows = getAllRowsInGrid();
+    for(var i = 0; i < $rows.length; i++) {
+      $($rows.get(i)).data("row", i);
+    }
   }
 
   // BAR
@@ -261,17 +306,44 @@ $(document).ready(function() {
       $cell.appendTo($bar);
     }
 
+    $deleteBarButton = $("<div/>", {"class": "delete-bar fa fa-trash"});
+    $deleteBarButton.on("click", function(e) {
+      stopMachine();
+      deleteBar(e);
+    });
+    $deleteBarButton.appendTo($bar);
+
     return $bar;
   }
 
   function addNewBar(e) {
     $currentRow = $(e.currentTarget).parent().parent();
-    $currentRowBars = $currentRow.children(".bars");
+    $currentRowBarsDiv = $currentRow.children(".bars");
     $lastBar = getLastBarInRow($currentRow);
     barIndex = $lastBar.data("bar") + 1;
 
     $bar = generateBar(barIndex);
-    $bar.appendTo($currentRowBars);
+    $bar.appendTo($currentRowBarsDiv);
+  }
+
+  function deleteBar(e) {
+    stopMachine();
+    $bar = $(e.currentTarget).parent();
+    $row = getRowFromBar($bar);
+    $bar.remove();
+    $bars = getAllBarsInRow($row);
+    if ($bars.length == 0) {
+      deleteRow($row);
+    } else {
+      resetBarIndexes($row);
+    }
+  }
+
+  function resetBarIndexes($row) {
+    $bars = getAllBarsInRow($row)
+    for(var i = 0; i < $bars.length; i++) {
+      $($bars.get(i)).data("bar", i);
+    }
   }
 
   // INSTRUMENT SELECT
@@ -314,6 +386,10 @@ $(document).ready(function() {
 
   function getAllRowsInGrid() {
     return $(".grid").children(".row");
+  }
+
+  function getRowFromBar($bar) {
+    return $bar.parent(".bars").parent(".row");
   }
 
 
