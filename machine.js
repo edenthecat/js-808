@@ -169,6 +169,7 @@ $(document).ready(function() {
   function generateGridFromPreset(instruments) {
     for (var instrumentName in instruments) {
       var $row = generateRow(instrumentName);
+      var $bars = $row.children(".bars");
 
       var bars = instruments[instrumentName];
       for (var i=0; i < bars.length; i++) {
@@ -179,7 +180,7 @@ $(document).ready(function() {
             $cell.addClass("active");
           }
         }
-        $bar.appendTo($row);
+        $bar.appendTo($bars);
       }
       $row.appendTo($(".grid"));
     }
@@ -200,12 +201,15 @@ $(document).ready(function() {
     $controls = generateRowControls(instrumentName);
     $controls.appendTo($row);
 
+    var $barsDiv = $("<div>", {"class": "bars"});
+    $barsDiv.appendTo($row);
+
     $row.on("row:play", function() {
        $this = $(this);
        if(step == 0 && totalSteps == 0) {
         var $currentCell = getCellByIndices($this.data("row"), 0, step);
         $currentCell.addClass("current");
-        var $currentBar = $($this.children().get(0));
+        var $currentBar = getFirstBarInRow($this);
         $currentBar.addClass("current");
        }
        playRow($this);
@@ -222,6 +226,7 @@ $(document).ready(function() {
     $addNewBarButton = $("<div/>", {"class": "add-new-bar"})
       .text("Add New Bar");
     $addNewBarButton.on("click", function(e) {
+      stopMachine();
       addNewBar(e);
     });
     $addNewBarButton.appendTo($controls);
@@ -233,8 +238,9 @@ $(document).ready(function() {
     rowIndex = $(".row").last().data("row") + 1;
 
     var $row = generateRow("kick");
+    var $bars = $row.children(".bars");
     var $bar = generateBar(0);
-    $bar.appendTo($row);
+    $bar.appendTo($bars);
 
     $row.appendTo($(".grid"));
   }
@@ -258,10 +264,12 @@ $(document).ready(function() {
 
   function addNewBar(e) {
     $currentRow = $(e.currentTarget).parent().parent();
+    $currentRowBars = $currentRow.children(".bars");
     $lastBar = getLastBarInRow($currentRow);
     barIndex = $lastBar.data("bar") + 1;
+
     $bar = generateBar(barIndex);
-    $bar.appendTo($currentRow);
+    $bar.appendTo($currentRowBars);
   }
 
   // INSTRUMENT SELECT
@@ -317,7 +325,8 @@ $(document).ready(function() {
   }
 
   function getCurrentBar($row) {
-    $bar = $($row.children(".current"));
+    $barsDiv = $row.children(".bars");
+    $bar = $($barsDiv.children(".current"));
     if($bar.length == 0) {
       $bar = getFirstBarInRow($row);
       setCurrentBar($row, $bar);
@@ -330,7 +339,13 @@ $(document).ready(function() {
   }
 
   function getAllBarsInRow($row) {
-    return $row.children(".bar");
+    if (typeof $row !== 'undefined') {
+      $barsDiv = $row.children(".bars");
+      return $barsDiv.children(".bar");
+    }
+    else {
+      return $();
+    }
   }
 
   function getLastBarInRow($row) {
@@ -359,12 +374,12 @@ $(document).ready(function() {
     return getCellByIndices(rowIndex, barIndex, step);
   }
 
-  function getNextCell(row, bar, cell) {
-    var numberOfBarsInRow = row.children().length;
+  function getNextCell($row, $bar, $cell) {
+    var numberOfBarsInRow = getAllBarsInRow($row).length;
 
-    var rowIndex = row.data("row");
-    var barIndex = bar.data("bar");
-    var cellIndex = cell.data("cell");
+    var rowIndex = $row.data("row");
+    var barIndex = $bar.data("bar");
+    var cellIndex = $cell.data("cell");
 
     if( cellIndex < (barLength - 1)) {
       cellIndex++;
@@ -381,11 +396,15 @@ $(document).ready(function() {
   }
 
   function getCellByIndices(rowIndex, barIndex, cellIndex) {
-    var row = $(".grid").children(".row").get(rowIndex);
-    var bar = $(row).children(".bar").get(barIndex);
-    var cell = $(bar).children(".cell").get(cellIndex);
+    var $row = $(getAllRowsInGrid().get(rowIndex));
+    var $bar = $(getAllBarsInRow($row).get(barIndex));
+    var $cell = $(getAllCellsInBar($bar).get(cellIndex));
 
-    return $(cell);
+    return $($cell);
+  }
+
+  function getAllCellsInBar($bar) {
+    return $($bar.children(".cell"))
   }
 
   // PRESETS
