@@ -1,55 +1,121 @@
-/*
-Error: File to import not found or unreadable: config/..
-       Load path: /Users/edenrohatensky/Projects/Splice/js-808/scss
-        on line 1 of scss/style.scss
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,600");
+.bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; }
 
-1: @import "config/.";
-2: @import "partials/.";
+.playing .bar {
+  opacity: 0.8; }
+  .playing .bar.current {
+    opacity: 1; }
 
-Backtrace:
-scss/style.scss:1
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/import_node.rb:67:in `rescue in import'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/import_node.rb:45:in `import'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/import_node.rb:28:in `imported_file'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/import_node.rb:37:in `css_import?'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/perform.rb:314:in `visit_import'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/base.rb:36:in `visit'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/perform.rb:162:in `block in visit'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/stack.rb:79:in `block in with_base'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/stack.rb:135:in `with_frame'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/stack.rb:79:in `with_base'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/perform.rb:162:in `visit'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/base.rb:52:in `map'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/base.rb:52:in `visit_children'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/perform.rb:171:in `block in visit_children'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/perform.rb:183:in `with_environment'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/perform.rb:170:in `visit_children'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/base.rb:36:in `block in visit'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/perform.rb:190:in `visit_root'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/base.rb:36:in `visit'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/perform.rb:161:in `visit'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/visitors/perform.rb:10:in `visit'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/root_node.rb:36:in `css_tree'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/tree/root_node.rb:29:in `render_with_sourcemap'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/engine.rb:389:in `_render_with_sourcemap'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/engine.rb:307:in `render_with_sourcemap'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/plugin/compiler.rb:462:in `update_stylesheet'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/plugin/compiler.rb:209:in `each'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/plugin/compiler.rb:443:in `on_file_changed'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-3.5.1/lib/sass/plugin/compiler.rb:320:in `block in watch'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-listen-4.0.0/lib/sass-listen/event/config.rb:23:in `call'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-listen-4.0.0/lib/sass-listen/event/processor.rb:115:in `_process_changes'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-listen-4.0.0/lib/sass-listen/event/processor.rb:19:in `block in loop_for'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-listen-4.0.0/lib/sass-listen/event/processor.rb:15:in `loop'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-listen-4.0.0/lib/sass-listen/event/processor.rb:15:in `loop_for'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-listen-4.0.0/lib/sass-listen/event/loop.rb:84:in `_wait_for_changes'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-listen-4.0.0/lib/sass-listen/event/loop.rb:42:in `block in setup'
-/Users/edenrohatensky/.rvm/gems/ruby-2.3.3/gems/sass-listen-4.0.0/lib/sass-listen/internals/thread_pool.rb:6:in `block in add'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Error: File to import not found or unreadable: config/..\A        Load path: /Users/edenrohatensky/Projects/Splice/js-808/scss\A         on line 1 of scss/style.scss\A \A 1: @import \"config/.\";\A 2: @import \"partials/.\";"; }
+.row .cell {
+  height: 5vw;
+  width: 10vw;
+  margin: 0.5em;
+  background-color: #b3b3b3;
+  border-bottom: 5px solid #4d4d4d;
+  opacity: 0.7; }
+  .row .cell.active {
+    background-color: #43BCC4;
+    opacity: 0.9; }
+  .row .cell.current {
+    opacity: 1; }
+  .row .cell.active.current {
+    background-color: #43BC67; }
+
+.grid {
+  display: block;
+  width: 100%;
+  position: relative;
+  clear: both;
+  top: 2em; }
+
+.row {
+  width: 100%;
+  background-color: aliceblue;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 1vw; }
+  .row:nth-of-type(n+1) {
+    background-color: #FFBC67; }
+    .row:nth-of-type(n+1) .controls {
+      background-color: #ffa634; }
+  .row:nth-of-type(n+2) {
+    background-color: #DA727E; }
+    .row:nth-of-type(n+2) .controls {
+      background-color: #cf4a59; }
+  .row:nth-of-type(n+3) {
+    background-color: #AC6C82; }
+    .row:nth-of-type(n+3) .controls {
+      background-color: #925369; }
+  .row:nth-of-type(n+4) {
+    background-color: #685C79; }
+    .row:nth-of-type(n+4) .controls {
+      background-color: #4f465c; }
+  .row:nth-of-type(n+5) {
+    background-color: #455C7B; }
+    .row:nth-of-type(n+5) .controls {
+      background-color: #33445a; }
+
+button.control-button {
+  outline: none; }
+
+select {
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
+  background-color: transparent;
+  width: 20vw;
+  font-size: 1em;
+  color: #FEFEFE;
+  border: none;
+  border-bottom: none;
+  border-radius: 0;
+  outline: 1px solid #FEFEFE;
+  margin: 2vw 1vw 1vw;
+  height: 4vw; }
+
+button {
+  background-color: transparent;
+  padding: 0.75vw;
+  border: 0;
+  color: #FEFEFE;
+  border-radius: 0;
+  outline: 1px solid #FEFEFE;
+  height: 4vw; }
+
+body {
+  background-color: #33445a;
+  color: #FEFEFE;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important; }
+
+#machine {
+  width: 90%;
+  margin: 0 auto;
+  display: block; }
+  #machine h1 {
+    float: left;
+    margin: 0;
+    font-size: 2em; }
+
+.machine-controls {
+  float: right;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 60%;
+  align-items: center;
+  height: 2em;
+  margin-top: 0.5em; }
+  .machine-controls select {
+    margin: 0; }
+
+#bpm {
+  outline: solid 1px white;
+  background-color: transparent;
+  border: 0;
+  padding: 1vw;
+  color: white;
+  width: 2em; }
+
+/*# sourceMappingURL=style.css.map */
