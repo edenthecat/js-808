@@ -27,9 +27,7 @@
 .grid {
   display: block;
   width: 100%;
-  position: relative;
-  clear: both;
-  top: 2em; }
+  margin-top: 5vw; }
 
 .row {
   width: 100%;
@@ -92,30 +90,40 @@ body {
 #machine {
   width: 90%;
   margin: 0 auto;
-  display: block; }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; }
   #machine h1 {
-    float: left;
     margin: 0;
     font-size: 2em; }
 
 .machine-controls {
-  float: right;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   width: 60%;
-  align-items: center;
-  height: 2em;
+  align-items: baseline;
   margin-top: 0.5em; }
-  .machine-controls select {
-    margin: 0; }
+  .machine-controls > div {
+    display: flex;
+    flex-direction: row;
+    min-width: 10vw;
+    height: 2em;
+    justify-content: space-between; }
+  .machine-controls select, .machine-controls input {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    margin: 0 1vw; }
 
 #bpm {
   outline: solid 1px white;
   background-color: transparent;
   border: 0;
-  padding: 1vw;
   color: white;
-  width: 2em; }
+  width: 2em;
+  box-sizing: content-box;
+  font-size: 1em;
+  text-align: center; }
 
 /*# sourceMappingURL=style.css.map */
