@@ -254,8 +254,11 @@ $(document).ready(function(){
   * getPlayFrequency: calculates the play frequency based on the BPM
   */
   function getPlayFrequency() {
-    playFrequency = ((bpm/60) * 4 ) / barLength; //calculate playFrequency in seconds
-    playFrequency *= 1000; //convert to miliseconds
+    bpm = $("#bpm").val();
+    beatsPerBar = 4;
+
+    // See http://xmidi.com/bpm.pdf for formula
+    playFrequency = 1000 / ( bpm / 60 ) * (beatsPerBar / barLength);
     return playFrequency;
   }
 
