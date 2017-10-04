@@ -112,14 +112,33 @@ $(document).ready(function(){
       rowIndex = $(".row").last().data("row") + 1;
     }
     $row = $("<div>", {"class": "row", "data-row": rowIndex});
+
+    $controls = $("<div>", {"class": "controls"});
+
     $instrumentSelect = generateInstrumentSelect();
-    //if (instrumentName) {
-    //  $instrumentSelect.val(instrumentName);
-    //}
-    //$instrumentSelect.appendTo($row);
+    if (instrumentName) {
+     $instrumentSelect.val(instrumentName);
+    }
+    $instrumentSelect.appendTo($controls);
+
+    $addNewBarButton = $("<div/>", {"class": "add-new-bar"})
+      .text("Add New Bar");
+    $addNewBarButton.on("click", function(e) {
+      addNewBar(e);
+    });
+    $addNewBarButton.appendTo($controls);
+
+    $controls.appendTo($row);
+
 
     $row.on("row:play", function() {
        $this = $(this);
+       if(step == 0 && totalSteps == 0) {
+        var $currentCell = getCellByIndices($this.data("row"), 0, step);
+        $currentCell.addClass("current");
+        var $currentBar = $($this.children().get(0));
+        $currentBar.addClass("current");
+       }
        playRow($this);
     });
     return $row;
@@ -143,12 +162,25 @@ $(document).ready(function(){
     var $this = $(this);
 
     $this.toggleClass("playing");
+    $this.toggleClass("fa-play");
+    $this.toggleClass("fa-pause");
+    $(".grid").toggleClass("playing");
     if($this.hasClass("playing")) {
       $(".grid").trigger("machine:playing");
     } else {
       $(".grid").trigger("machine:paused");
     }
   });
+
+  $(".stop-button").click(function() {
+    stopMachine();
+  });
+
+  function stopMachine() {
+    $(".grid").trigger("machine:paused");
+    $(".play-button").trigger("click");
+    $(".current").removeClass("current");
+  }
 
   /*
   * Event: Row Playing
@@ -158,9 +190,25 @@ $(document).ready(function(){
 
     playFrequency = getPlayFrequency();
 
+    initializeGrid($this);
+
     playId = setInterval(play, playFrequency);
     $this.attr("data-play-id", playId);
   });
+
+  function initializeGrid($grid) {
+    $rows = $grid.children();
+
+    for(var i = 0; i < $rows.length; i++) {
+      row = $($rows[i]);
+
+      $firstBar = $(row.children(".bar").get(0));
+      setCurrentBar(row, $firstBar);
+
+      $firstCell = $($firstBar.get(0));
+      setCurrentCell(row, $firstCell);
+    }
+  }
 
   /*
   * Event: Row Paused
@@ -190,15 +238,8 @@ $(document).ready(function(){
   * playRow: plays a row
   */
   function playRow(row) {
-    console.log("playing row: " + step);
-    if(step == 0 && totalSteps == 0) {
-      var currentCell = getCellByIndices(row.data("row"), 0, step);
-      currentCell.addClass("current");
-    } else {
-      var currentCell = getCurrentCell(row);
-    }
+    var currentCell = getCurrentCell(row);
     var currentBar = $(currentCell).parent();
-
 
     var nextCell = getNextCell(row, currentBar, currentCell);
     var nextBar = nextCell.parent();
@@ -309,12 +350,18 @@ $(document).ready(function(){
   function addNewRow() {
     rowIndex = $(".row").last().data("row") + 1;
 
-    var $row = $("<div>", {"class": "row", "data-row": rowIndex});
-
+    var $row = generateRow("kick");
     var $bar = generateBar(0);
     $bar.appendTo($row);
 
     $row.appendTo($(".grid"));
+  }
+
+  function addNewBar(e) {
+    $currentRow = $(e.currentTarget).parent().parent();
+    barIndex = $currentRow.children(".bar").last();
+    $bar = generateBar(barIndex);
+    $bar.appendTo($currentRow);
   }
 
   function generateBar(barIndex) {
